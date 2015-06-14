@@ -130,8 +130,12 @@ endfunction
 function! s:stripTitleText(pageName)
 	let pageName = a:pageName
 	if match(pageName, '|') != -1
-		let pageName = substitute(pageName, '\v(.*)\|.*$', '\1', '')
+		let pageName = substitute(pageName, '\v(.{-})\|.*$', '\1', '')
 	endif
+
+	" 使用できない文字を削除
+	let pageName = substitute(pageName, '\v,|\.|\/|\?|;|\||\:', '', 'g')
+
 	return pageName
 endfunction
 
@@ -161,6 +165,9 @@ function! s:Wiki.getPageContent(pageName)
 		if response.status == 401
 			call self.deleteAPIKey()
 			call s:echoErr('Unauthorized : Bad API key.')
+			return {}
+		elseif response.status == 404
+			" 404の場合はページがない(新規作成する)
 			return {}
 		elseif response.status != 200
 			call s:echoErr('An error occurred. HTTP status is ' . response.status . '.')
