@@ -100,7 +100,7 @@ function! s:WikiPage.makeBuffer(pageText)
 
 	let proj_name = self.wikiObj.getProjectName()
 
-	silent execute 'edit ++enc=utf-8 ++ff=dos ' proj_name '::' substitute(self.pageName, ' ', '\\ ', 'g')
+	silent execute 'edit ++enc=utf-8 ++ff=dos ' proj_name.'::'.substitute(self.pageName, ' ', '\\ ', 'g')
 	setlocal ft=redminewiki
 	setlocal fenc=utf-8
 	let self.bufnr = bufnr('%')

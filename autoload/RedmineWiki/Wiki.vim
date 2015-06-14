@@ -134,7 +134,7 @@ function! s:stripTitleText(pageName)
 	endif
 
 	" 使用できない文字を削除
-	let pageName = substitute(pageName, '\v,|\.|\/|\?|;|\||\:', '', 'g')
+	let pageName = substitute(pageName, '\v,|\.|\/|\?|;|\|', '', 'g')
 
 	return pageName
 endfunction
