@@ -102,6 +102,7 @@ function! s:WikiPage.makeBuffer(pageText)
 
 	silent execute 'edit ++enc=utf-8 ++ff=dos ' proj_name '::' substitute(self.pageName, ' ', '\\ ', 'g')
 	setlocal ft=redminewiki
+	setlocal fenc=utf-8
 	let self.bufnr = bufnr('%')
 
 	call self.initBufferContent(a:pageText)
