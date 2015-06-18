@@ -280,7 +280,12 @@ endfunction
 
 " メインページを開く
 function! s:Wiki.openMainPage()
-	return self.openPage(self.getMainPageName())
+	let mainPageName = self.getMainPageName()
+	if self.openPage(mainPageName) != 0
+		return 1
+	endif
+
+	return self.createPage('', mainPageName)
 endfunction
 
 " ページ名降順でソートするための関数

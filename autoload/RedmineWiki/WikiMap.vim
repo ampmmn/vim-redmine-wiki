@@ -126,12 +126,14 @@ function! s:openBookmarkItem(line)
 		let wikiObj = wikiMap.createWiki(site_url, proj_name)
 		call wikiObj.setReadOnly(is_readonly)
 
-		if pageName != ''
-			call wikiObj.openPage(pageName)
-		else
-			call wikiObj.openMainPage()
+		if pageName == ''
+			return wikiObj.openMainPage()
 		endif
-		return 1
+
+		if wikiObj.openPage(pageName) != 0
+			return 0
+		endif
+		return wikiObj.createPage('', pageName)
 	catch /.*/
 		return s:echoErr(v:exception)
 	endtry
