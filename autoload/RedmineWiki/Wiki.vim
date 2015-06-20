@@ -116,6 +116,14 @@ function! s:Wiki.activatePageIfExists(pageName)
 	return 0
 endfunction
 
+" プロジェクトページの有無を確認する
+function! s:Wiki.isProjectExists()
+	let url = self.url . '/projects/' . self.getProjectName()
+	let response = webapi#http#get(url)
+	return response.status == 200
+
+endfunction
+
 " Wikiページオブジェクトの削除
 function! s:Wiki.eraseWikiPageObject(pageName)
 	if !has_key(self.pages, a:pageName)
@@ -165,19 +173,19 @@ function! s:Wiki.getPageContent(pageName)
 		if response.status == 401
 			call self.deleteAPIKey()
 			call s:echoErr('Unauthorized : Bad API key.')
-			return {}
+			return { 'status':response.status }
 		elseif response.status == 404
 			" 404の場合はページがない(新規作成する)
-			return {}
+			return { 'status':response.status }
 		elseif response.status != 200
 			call s:echoErr('An error occurred. HTTP status is ' . response.status . '.')
-			return {}
+			return { 'status':response.status }
 		endif
 
 		let json = webapi#json#decode(response["content"])
 		return json.wiki_page
 	catch /.*/
-		return {}
+		return { 'status':500 }
 	endtry
 endfunction
 
@@ -204,8 +212,13 @@ function! s:Wiki.openPage(pageName)
 
 	" ページの内容を取得
 	let wiki_page = self.getPageContent(pageName)
+	if has_key(wiki_page, 'status') != 0
+		if wiki_page.status == 404
+			return 0
+		endif
+	endif
 	if has_key(wiki_page, 'text') == 0
-		return 0
+		return -1
 	endif
 
 	let newPageObj = RedmineWiki#WikiPage#createInstance(self, pageName)
@@ -281,11 +294,13 @@ endfunction
 " メインページを開く
 function! s:Wiki.openMainPage()
 	let mainPageName = self.getMainPageName()
-	if self.openPage(mainPageName) != 0
-		return 1
+
+	let retCode = self.openPage(mainPageName)
+	if retCode == 0
+		return self.createPage('', mainPageName)
 	endif
 
-	return self.createPage('', mainPageName)
+	return retCode
 endfunction
 
 " ページ名降順でソートするための関数

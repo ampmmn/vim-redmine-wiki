@@ -48,12 +48,13 @@ let s:bookmark_template = [
 let s:WikiMap = { 'wikis':{} }
 
 function! s:WikiMap.createWiki(url, proj_name)
-	if has_key(self.wikis, a:proj_name) != 0
-		return self.wikis[a:proj_name]
+	let key = a:url . '/projects/' . a:proj_name
+	if has_key(self.wikis, key) != 0
+		return self.wikis[key]
 	endif
 
 	let newWikiObj = RedmineWiki#Wiki#createInstance(self, a:url, a:proj_name)
-	let self.wikis[newWikiObj.getProjectName()] = newWikiObj
+	let self.wikis[key] = newWikiObj
 
 	return newWikiObj
 endfunction
@@ -126,14 +127,21 @@ function! s:openBookmarkItem(line)
 		let wikiObj = wikiMap.createWiki(site_url, proj_name)
 		call wikiObj.setReadOnly(is_readonly)
 
+		if wikiObj.isProjectExists() == 0
+			return s:echoErr('The specified project page does not exist.')
+		endif
+
 		if pageName == ''
 			return wikiObj.openMainPage()
 		endif
 
-		if wikiObj.openPage(pageName) != 0
-			return 0
+		let retCode = wikiObj.openPage(pageName)
+		if retCode == 1
+			return 1
+		elseif retCode == 0
+			return wikiObj.createPage('', pageName)
 		endif
-		return wikiObj.createPage('', pageName)
+		return 0
 	catch /.*/
 		return s:echoErr(v:exception)
 	endtry
