@@ -5,6 +5,8 @@ Description
 -----------
 A vim plugin to browse redmine wiki.
 
+![snapshot](snapshot1.png)
+
 Requires
 --------
 * [curl command](http://curl.haxx.se/) : http://curl.haxx.se/
