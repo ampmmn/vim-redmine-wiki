@@ -5,6 +5,9 @@ Description
 -----------
 A vim plugin to browse redmine wiki.
 
+[“ú–{Œê‚ÌREADME](README.ja.md)
+
+
 ![snapshot](snapshot1.png)
 
 The above is the bookmark page. In order to show your bookmark page, execute ':RedmineWikiBookmark' command.
