@@ -5,7 +5,7 @@ Description
 -----------
 A vim plugin to browse redmine wiki.
 
-[“ú–{Œê‚ÌREADME](README.ja.md)
+[æ—¥æœ¬èªã®README](README.ja.md)
 
 
 ![snapshot](snapshot1.png)
