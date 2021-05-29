@@ -76,7 +76,7 @@ function! s:WikiPage.initBufferContent(pageText)
 		" 1行目に親ページ名と現在のページ名を表示する
 		let pagePath = ''
 		if self.parentPageName != ''
-			let pagePath = '[[' . self.parentPageName . ']]' >> '
+			let pagePath = '[[' . self.parentPageName . ']] >> '
 		endif
 		let pagePath .= self.pageName
 		call append(0, pagePath)
