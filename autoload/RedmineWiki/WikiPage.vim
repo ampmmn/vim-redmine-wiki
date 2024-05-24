@@ -219,14 +219,14 @@ function! s:WikiPage.save()
 	let sts = response.status
 	if sts == 409
 		return s:echoErr('Conflict : ' . self.pageName . ' is already updated.')
-	elseif sts != 200 && sts != 201
+	elseif sts != 200 && sts != 201 && sts != 204
 		return s:echoErr('Unable to create/update wiki_page : ' . self.pageName)
 	endif
 
 	" 
 	call self.reload()
 
-	echo 'wiki_page : ' self.pageName . (sts == 200 ? ' updated.' : ' created.')
+	echo 'wiki_page : ' self.pageName . ((sts == 200 || sts == 204) ? ' updated.' : ' created.')
 
 	return 1
 
